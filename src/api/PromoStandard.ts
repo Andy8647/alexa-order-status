@@ -37,8 +37,8 @@ const fakeData = (referenceNumber?: string) => ({
     ? fakeOrders.filter((order) => order.purchaseOrderNumber === referenceNumber)
     : fakeOrders,
   errorMessage: referenceNumber
-    ? undefined
-    : `orders matching referenceNumber ${referenceNumber} not found.`,
+    ? `orders matching referenceNumber ${referenceNumber} not found.`
+    : undefined,
 });
 
 export const getOpenOrders = async (): Promise<IOrderStatusResponse> => {
