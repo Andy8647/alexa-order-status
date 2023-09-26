@@ -5,7 +5,7 @@ import SendDirectiveRequest = services.directive.SendDirectiveRequest;
 
 export const errorHandler = (handlerInput: HandlerInput, error: any) => {
   console.error('-------ERROR--------\n', error, '\n-------ERROR--------');
-  const errorText = 'Sorry, there is something wrong with PrompStandards. Please try again later.';
+  const errorText = error;
   return handlerInput.responseBuilder
     .speak(errorText)
     .withSimpleCard('Error', errorText)
@@ -35,11 +35,14 @@ const parseDate = (date: Date) =>
     day: 'numeric',
   });
 
-export const callDirectiveService = (handerInput: HandlerInput) => {
+export const callDirectiveService = async (handerInput: HandlerInput) => {
   const requestEnvelope = handerInput.requestEnvelope;
   const directiveServiceClient = handerInput.serviceClientFactory.getDirectiveServiceClient();
 
   const requestId = requestEnvelope.request.requestId;
+
+  // sleep for 8 seconds
+  await new Promise((resolve) => setTimeout(resolve, 8000));
 
   const directive: SendDirectiveRequest = {
     header: {

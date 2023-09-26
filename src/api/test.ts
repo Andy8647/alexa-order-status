@@ -4,7 +4,7 @@ import { getOpenOrders, getOrderStatusByReferenceNumber } from './PromoStandard'
 //   .then((res) => console.log(res))
 //   .catch((err) => console.log(err));
 //
-getOrderStatusByReferenceNumber('RBK001')
+getOrderStatusByReferenceNumber('1443829452')
   .then((res) => console.log(res))
   .catch((err) => console.log(err));
 
