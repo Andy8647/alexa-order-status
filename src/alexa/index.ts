@@ -7,6 +7,7 @@ import { AlexaErrorHandler } from './ErrorHandler';
 import { CancelAndStopIntentHandler } from './CancelAndStopIntentHandler';
 import { SessionEndedRequestHandler } from './SessionEndHandler';
 import { OrderStatusByIdRequestHandler } from './OrderStatusByIdRequestHandler';
+import { interceptors } from './helper';
 
 export class AlexaSkill {
   private skill: Skill;
@@ -21,6 +22,8 @@ export class AlexaSkill {
         SessionEndedRequestHandler,
       )
       .withApiClient(new DefaultApiClient())
+      .addRequestInterceptors(interceptors.LogRequestInterceptor)
+      .addResponseInterceptors(interceptors.LogResponseInterceptor)
       .addErrorHandlers(AlexaErrorHandler)
       .create();
   }
@@ -28,11 +31,7 @@ export class AlexaSkill {
   public async invoke(event: RequestEnvelope, context: any): Promise<ResponseEnvelope> {
     console.time('========== AlexaSkill.invoke ==========');
 
-    console.log('------ Request ------', event);
-
     const response = await this.skill.invoke(event, context);
-
-    console.log('------ Response ------', response);
 
     console.timeEnd('========== AlexaSkill.invoke ==========');
 

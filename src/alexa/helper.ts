@@ -53,3 +53,19 @@ export const callDirectiveService = (handerInput: HandlerInput) => {
 
   return directiveServiceClient.enqueue(directive);
 };
+
+export const interceptors = {
+  LogRequestInterceptor: {
+    process(handlerInput: HandlerInput) {
+      console.log(
+        '======= REQUEST ========',
+        JSON.stringify(handlerInput.requestEnvelope, null, 2),
+      );
+    },
+  },
+  LogResponseInterceptor: {
+    process(handlerInput: HandlerInput, reponse) {
+      console.log('======= RESPONSE  ========', JSON.stringify(reponse, null, 2));
+    },
+  },
+};
