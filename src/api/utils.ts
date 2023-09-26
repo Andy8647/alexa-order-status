@@ -11,8 +11,8 @@ import {
   OrderStatusForAlexa,
 } from './interface';
 
-const username = 'ps3553427';
-const password = 'v5PG6x7S';
+const username = '3329112';
+const password = '3329112';
 const endpoint = 'https://devservices.alphabroder.com/orderStatus-1-0/service/index.php';
 
 const xmls = (param: IOrderStatusRequest) => {
