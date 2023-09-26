@@ -32,22 +32,3 @@ const parseDate = (date: Date) =>
     month: 'long',
     day: 'numeric',
   });
-
-export function callDirectiveService(handlerInput: HandlerInput) {
-  const requestEnvelope = handlerInput.requestEnvelope;
-  const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
-
-  const requestId = requestEnvelope.request.requestId;
-
-  const directive = {
-    header: {
-      requestId,
-    },
-    directive: {
-      type: 'VoicePlayer.Speak' as 'VoicePlayer.Speak',
-      speech: "Please wait while we're getting your order status.",
-    },
-  };
-  // send directive
-  return directiveServiceClient.enqueue(directive);
-}

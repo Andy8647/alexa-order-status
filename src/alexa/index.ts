@@ -20,7 +20,6 @@ export class AlexaSkill {
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
       )
-      .withApiClient(new DefaultApiClient())
       .addErrorHandlers(AlexaErrorHandler)
       .create();
   }

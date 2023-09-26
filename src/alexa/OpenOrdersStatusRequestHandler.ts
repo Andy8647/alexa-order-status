@@ -1,7 +1,7 @@
 import { HandlerInput, RequestHandler } from 'ask-sdk-core';
 import { Response } from 'ask-sdk-model';
 import { getOpenOrders } from '../api/PromoStandard';
-import { callDirectiveService, errorHandler } from './helper';
+import { errorHandler } from './helper';
 import { IOrderStatusResponse } from '../api/interface';
 
 export const OpenOrdersStatusRequestHandler: RequestHandler = {
@@ -10,12 +10,7 @@ export const OpenOrdersStatusRequestHandler: RequestHandler = {
     return request.type === 'IntentRequest' && request.intent.name === 'OpenOrderStatus';
   },
   async handle(handlerInput: HandlerInput): Promise<Response> {
-    try {
-      await callDirectiveService(handlerInput);
-    } catch (err) {
-      console.log('callDirectiveService error : ' + err);
-    }
-
+    console.time('==== OpenOrderStatus Query ====');
     let ordersStatus: IOrderStatusResponse;
     try {
       ordersStatus = await getOpenOrders();
@@ -40,6 +35,7 @@ export const OpenOrdersStatusRequestHandler: RequestHandler = {
         .join(', ')}`;
     }
 
+    console.timeEnd('==== OpenOrderStatus Query ====');
     return handlerInput.responseBuilder
       .speak(speechText)
       .withSimpleCard('Order Status', speechText)
