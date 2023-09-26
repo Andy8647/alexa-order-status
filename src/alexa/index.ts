@@ -20,14 +20,21 @@ export class AlexaSkill {
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
       )
+      .withApiClient(new DefaultApiClient())
       .addErrorHandlers(AlexaErrorHandler)
       .create();
   }
 
   public async invoke(event: RequestEnvelope, context: any): Promise<ResponseEnvelope> {
-    console.log(`REQUEST++++${JSON.stringify(event)}`);
+    console.time('========== AlexaSkill.invoke ==========');
+
+    console.log('------ Request ------', event);
+
     const response = await this.skill.invoke(event, context);
-    console.log(`RESPONSE++++${JSON.stringify(response)}`);
+
+    console.log('------ Response ------', response);
+
+    console.timeEnd('========== AlexaSkill.invoke ==========');
 
     return response;
   }

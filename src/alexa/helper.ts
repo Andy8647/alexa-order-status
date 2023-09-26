@@ -1,5 +1,7 @@
 import { HandlerInput } from 'ask-sdk-core';
 import { OrderStatusForAlexa } from '../api/interface';
+import { services } from 'ask-sdk-model';
+import SendDirectiveRequest = services.directive.SendDirectiveRequest;
 
 export const errorHandler = (handlerInput: HandlerInput, error: any) => {
   console.error('-------ERROR--------\n', error, '\n-------ERROR--------');
@@ -32,3 +34,22 @@ const parseDate = (date: Date) =>
     month: 'long',
     day: 'numeric',
   });
+
+export const callDirectiveService = (handerInput: HandlerInput) => {
+  const requestEnvelope = handerInput.requestEnvelope;
+  const directiveServiceClient = handerInput.serviceClientFactory.getDirectiveServiceClient();
+
+  const requestId = requestEnvelope.request.requestId;
+
+  const directive: SendDirectiveRequest = {
+    header: {
+      requestId,
+    },
+    directive: {
+      type: 'VoicePlayer.Speak',
+      speech: 'Please wait while we are processing your query',
+    },
+  };
+
+  return directiveServiceClient.enqueue(directive);
+};

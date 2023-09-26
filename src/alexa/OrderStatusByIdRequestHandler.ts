@@ -1,7 +1,7 @@
 import { HandlerInput, RequestHandler } from 'ask-sdk-core';
 import { Response } from 'ask-sdk-model';
 import { getOrderStatusByReferenceNumber } from '../api/PromoStandard';
-import { errorHandler, generateOrderStatusSpeechText } from './helper';
+import { callDirectiveService, errorHandler, generateOrderStatusSpeechText } from './helper';
 import { IOrderStatusResponse } from '../api/interface';
 
 export const OrderStatusByIdRequestHandler: RequestHandler = {
@@ -10,7 +10,6 @@ export const OrderStatusByIdRequestHandler: RequestHandler = {
     return request.type === 'IntentRequest' && request.intent.name === 'OrderStatusById';
   },
   async handle(handlerInput: HandlerInput): Promise<Response> {
-    console.time('====== OrderStatusByIdRequestHandler ======');
     if (!('intent' in handlerInput.requestEnvelope.request)) {
       return errorHandler(handlerInput, 'No intent in request');
     }
@@ -21,25 +20,29 @@ export const OrderStatusByIdRequestHandler: RequestHandler = {
 
     if (!referenceNumber) return errorHandler(handlerInput, 'No referenceNumber in request');
 
-    let orderStatus: IOrderStatusResponse;
     try {
-      orderStatus = await getOrderStatusByReferenceNumber(referenceNumber);
+      await callDirectiveService(handlerInput);
+    } catch (e) {
+      console.log('progressive response error: ' + e);
+    }
+
+    try {
+      const orderStatus: IOrderStatusResponse =
+        await getOrderStatusByReferenceNumber(referenceNumber);
+
+      if (typeof orderStatus === 'string') {
+        return errorHandler(handlerInput, orderStatus);
+      }
+
+      const speechText = generateOrderStatusSpeechText(referenceNumber, orderStatus[0]);
+
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .withSimpleCard('Order Status', speechText)
+        .withShouldEndSession(false)
+        .getResponse();
     } catch (err) {
       return errorHandler(handlerInput, err);
     }
-
-    if (typeof orderStatus === 'string') {
-      return errorHandler(handlerInput, orderStatus);
-    }
-
-    const speechText = generateOrderStatusSpeechText(referenceNumber, orderStatus[0]);
-
-    console.timeEnd('====== OrderStatusByIdRequestHandler ======');
-
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .withSimpleCard('Order Status', speechText)
-      .withShouldEndSession(false)
-      .getResponse();
   },
 };
