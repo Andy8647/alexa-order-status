@@ -111,6 +111,7 @@ export const post = async (
   const parserOptions: ParserOptions = {};
 
   try {
+    console.time('SOAP Request');
     const res = await axios.post(endpoint, xmls(params), {
       headers: {
         'Content-Type': 'text/xml',
@@ -126,6 +127,7 @@ export const post = async (
       util.inspect(parsedRes, false, null, true),
       '\n============ Parsed Response ============',
     );
+    console.timeEnd('SOAP Request');
 
     return parsedRes;
   } catch (err) {
