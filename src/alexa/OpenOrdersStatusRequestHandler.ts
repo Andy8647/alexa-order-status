@@ -11,10 +11,8 @@ export const OpenOrdersStatusRequestHandler: RequestHandler = {
   },
   async handle(handlerInput: HandlerInput): Promise<Response> {
     try {
-      //Call the progressive response service
       await callDirectiveService(handlerInput);
     } catch (err) {
-      // if it failed we can continue, just the user will wait longer for first response
       console.log('callDirectiveService error : ' + err);
     }
 

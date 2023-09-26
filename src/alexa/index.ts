@@ -1,4 +1,4 @@
-import { HandlerInput, Skill, SkillBuilders } from 'ask-sdk-core';
+import { DefaultApiClient, Skill, SkillBuilders } from 'ask-sdk-core';
 import { RequestEnvelope, ResponseEnvelope } from 'ask-sdk-model';
 
 import { LaunchRequestHandler } from './LaunchRequestHandler';
@@ -20,6 +20,7 @@ export class AlexaSkill {
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
       )
+      .withApiClient(new DefaultApiClient())
       .addErrorHandlers(AlexaErrorHandler)
       .create();
   }
