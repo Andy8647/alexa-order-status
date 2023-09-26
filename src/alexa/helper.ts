@@ -41,9 +41,6 @@ export const callDirectiveService = async (handerInput: HandlerInput) => {
 
   const requestId = requestEnvelope.request.requestId;
 
-  // sleep for 8 seconds
-  await new Promise((resolve) => setTimeout(resolve, 8000));
-
   const directive: SendDirectiveRequest = {
     header: {
       requestId,
