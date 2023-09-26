@@ -1,7 +1,7 @@
 import { HandlerInput, RequestHandler } from 'ask-sdk-core';
 import { Response } from 'ask-sdk-model';
 import { getOrderStatusByReferenceNumber } from '../api/PromoStandard';
-import { errorHandler, generateOrderStatusSpeechText } from './helper';
+import { callDirectiveService, errorHandler, generateOrderStatusSpeechText } from './helper';
 import { IOrderStatusResponse } from '../api/interface';
 
 export const OrderStatusByIdRequestHandler: RequestHandler = {
@@ -19,6 +19,14 @@ export const OrderStatusByIdRequestHandler: RequestHandler = {
       slots && slots.referenceNumber && slots.referenceNumber.value.trim().toUpperCase();
 
     if (!referenceNumber) return errorHandler(handlerInput, 'No referenceNumber in request');
+
+    try {
+      //Call the progressive response service
+      await callDirectiveService(handlerInput);
+    } catch (err) {
+      // if it failed we can continue, just the user will wait longer for first response
+      console.log('callDirectiveService error : ' + err);
+    }
 
     let orderStatus: IOrderStatusResponse;
     try {

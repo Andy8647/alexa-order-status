@@ -1,7 +1,7 @@
 import { HandlerInput, RequestHandler } from 'ask-sdk-core';
 import { Response } from 'ask-sdk-model';
 import { getOpenOrders } from '../api/PromoStandard';
-import { errorHandler } from './helper';
+import { callDirectiveService, errorHandler } from './helper';
 import { IOrderStatusResponse } from '../api/interface';
 
 export const OpenOrdersStatusRequestHandler: RequestHandler = {
@@ -10,6 +10,14 @@ export const OpenOrdersStatusRequestHandler: RequestHandler = {
     return request.type === 'IntentRequest' && request.intent.name === 'OpenOrderStatus';
   },
   async handle(handlerInput: HandlerInput): Promise<Response> {
+    try {
+      //Call the progressive response service
+      await callDirectiveService(handlerInput);
+    } catch (err) {
+      // if it failed we can continue, just the user will wait longer for first response
+      console.log('callDirectiveService error : ' + err);
+    }
+
     let ordersStatus: IOrderStatusResponse;
     try {
       ordersStatus = await getOpenOrders();

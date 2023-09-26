@@ -32,3 +32,27 @@ const parseDate = (date: Date) =>
     month: 'long',
     day: 'numeric',
   });
+
+export function callDirectiveService(handlerInput: HandlerInput) {
+  // Call Alexa Directive Service.
+  const requestEnvelope = handlerInput.requestEnvelope;
+  const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
+
+  const requestId = requestEnvelope.request.requestId;
+  const endpoint = requestEnvelope.context.System.apiEndpoint;
+  const token = requestEnvelope.context.System.apiAccessToken;
+
+  // build the progressive response directive
+  const directive = {
+    header: {
+      requestId,
+    },
+    directive: {
+      type: 'VoicePlayer.Speak',
+      speech: "Space is a bit far way. I'll need a few seconds to get the information from ISS.",
+    },
+  };
+  // send directive
+  // @ts-ignore
+  return directiveServiceClient.enqueue(directive, endpoint, token);
+}
